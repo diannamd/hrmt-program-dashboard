@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Program Review Dashboard - March 5, 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .stat-card { transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .chart-container { position: relative; height: 400px; margin: 20px 0; }
+        .chart-container-tall { position: relative; height: 500px; margin: 20px 0; }
+        .insight-box { border-left: 4px solid; padding: 12px 16px; margin-bottom: 12px; border-radius: 0 8px 8px 0; }
+        .insight-critical { border-color: #EF4444; background: #FEF2F2; }
+        .insight-warning { border-color: #F59E0B; background: #FFFBEB; }
+        .insight-positive { border-color: #10B981; background: #ECFDF5; }
+        .insight-info { border-color: #3B82F6; background: #EFF6FF; }
+        .projection-note { background: #FFF3CD; border-left: 4px solid #F39C12; padding: 12px; margin-top: 10px; font-size: 0.875rem; color: #856404; border-radius: 0 8px 8px 0; }
+        .tab-active { background-color: #1D4ED8 !important; color: white !important; box-shadow: 0 4px 12px rgba(29,78,216,0.3); }
+        .discussion-prompt { background: linear-gradient(135deg, #F0F9FF, #E0F2FE); border: 1px solid #BAE6FD; border-radius: 8px; padding: 16px; margin: 12px 0; }
+        .discussion-prompt h4 { color: #0369A1; font-weight: 600; margin-bottom: 8px; }
+        .discussion-prompt ul { list-style-type: disc; padding-left: 20px; color: #475569; }
+        .discussion-prompt li { margin-bottom: 4px; font-size: 0.9rem; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .badge-growth { background: #D1FAE5; color: #065F46; }
+        .badge-decline { background: #FEE2E2; color: #991B1B; }
+        .trend-up { color: #10B981; }
+        .trend-down { color: #EF4444; }
+        @media print { .no-print { display: none; } body { background: white !important; } }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50">
+    <div class="min-h-screen p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-700 to-indigo-800 rounded-lg shadow-lg p-8 mb-8 text-white">
+                <h1 class="text-4xl font-bold mb-2">HR Program Review Dashboard</h1>
+                <p class="text-blue-200 text-lg">Faculty Group Meeting &mdash; March 5, 2026</p>
+            </div>
+
+            <!-- Navigation -->
+            <div class="bg-white rounded-lg shadow-md p-4 mb-8 no-print sticky top-0 z-50">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="showView('overview')" id="btn-overview" class="px-5 py-3 rounded-lg font-semibold tab-active">Overview</button>
+                    <button onclick="showView('competitive')" id="btn-competitive" class="px-5 py-3 rounded-lg font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200">Competitive Landscape</button>
+                    <button onclick="showView('diploma')" id="btn-diploma" class="px-5 py-3 rounded-lg font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200">Diploma Future</button>
+                    <button onclick="showView('hrmt100')" id="btn-hrmt100" class="px-5 py-3 rounded-lg font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200">HRMT 100 Vision</button>
+                </div>
+            </div>
+
+            <!-- ==================== OVERVIEW TAB ==================== -->
+            <div id="view-overview" class="view-content">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Where We Stand</h2>
+
+                <!-- Key Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-amber-500">
+                        <p class="text-sm text-gray-600 font-medium">Diploma (2024-25)</p>
+                        <p class="text-3xl font-bold mt-2 text-amber-600">128</p>
+                        <p class="text-sm text-red-500 mt-1">down from 295 in 2018-19 (-57%)</p>
+                    </div>
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-emerald-500">
+                        <p class="text-sm text-gray-600 font-medium">HRMT 200 (2024-25)</p>
+                        <p class="text-3xl font-bold mt-2 text-emerald-600">621</p>
+                        <p class="text-sm text-green-600 mt-1">becomes ~1,586 when BComm core (Fall 2027)</p>
+                    </div>
+                </div>
+
+                <!-- What's New -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-bold mb-3 text-gray-800">What's New Since January</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="insight-box insight-critical">
+                            <h4 class="font-semibold text-red-800 text-sm">Competitive Data (IAP)</h4>
+                            <p class="text-sm text-gray-700 mt-1">MacEwan diploma down 57%. NAIT +195%, NorQuest +750%. But competitor growth is largely international-driven and projected to contract.</p>
+                        </div>
+                        <div class="insight-box insight-warning">
+                            <h4 class="font-semibold text-amber-800 text-sm">CPHR Pathway</h4>
+                            <p class="text-sm text-gray-700 mt-1">83 student members (60 degree, 23 diploma). Only 3 wrote the NKE. Degree holders passed; diploma did not.</p>
+                        </div>
+                        <div class="insight-box insight-info">
+                            <h4 class="font-semibold text-blue-800 text-sm">Industry Trends</h4>
+                            <p class="text-sm text-gray-700 mt-1">AI automating entry-level HR admin. Employers want strategic skills: analytics, change management, business acumen.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Today's Discussion -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-bold mb-4 text-gray-800">Today's Discussion</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gradient-to-br from-red-50 to-amber-50 rounded-lg p-5 border border-red-200">
+                            <h4 class="font-bold text-red-900 mb-2">Diploma Direction & AQA Response</h4>
+                            <p class="text-sm text-gray-700">What does the data say about the diploma's future? How do we sequence the AQA recommendations? Most wait for this gate decision.</p>
+                            <p class="text-xs text-gray-500 mt-2">Tabs: Competitive Landscape, Diploma Future</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-5 border border-emerald-200">
+                            <h4 class="font-bold text-emerald-900 mb-2">HRMT 100 Vision (Independent Track)</h4>
+                            <p class="text-sm text-gray-700">Enters BComm core Fall 2027. Agree to start, identify a lead. This moves regardless of the diploma decision.</p>
+                            <p class="text-xs text-gray-500 mt-2">Tab: HRMT 100 Vision</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== COMPETITIVE LANDSCAPE TAB ==================== -->
+            <div id="view-competitive" class="view-content" style="display:none">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Alberta HR Diploma Competitive Landscape</h2>
+
+                <!-- Critical Insight Banner -->
+                <div class="bg-red-50 border border-red-200 rounded-lg p-5 mb-6">
+                    <h3 class="text-base font-bold text-red-800 mb-2">The Competitive Picture Has Shifted, But It's Complicated</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-500">📉</span>
+                            <div><p class="text-sm font-semibold text-gray-800">MacEwan -57%</p><p class="text-xs text-gray-600">295 to 128</p></div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-500">📈</span>
+                            <div><p class="text-sm font-semibold text-gray-800">Competitors grew</p><p class="text-xs text-gray-600">NAIT +195%, NorQuest +750%</p></div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-amber-500">⚠️</span>
+                            <div><p class="text-sm font-semibold text-gray-800">International-driven</p><p class="text-xs text-gray-600">NorQuest and NAIT projected to contract</p></div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-blue-500">❓</span>
+                            <div><p class="text-sm font-semibold text-gray-800">Landscape shifting</p><p class="text-xs text-gray-600">True domestic demand unknown</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Share Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="stat-card bg-white rounded-lg shadow-md p-5 border-l-4 border-red-500">
+                        <p class="text-sm text-gray-600 font-medium">MacEwan Market Share</p>
+                        <p class="text-3xl font-bold mt-1 text-red-600">7.4%</p>
+                        <p class="text-sm text-red-500 mt-1">down from 36.7% in 2018-19</p>
+                    </div>
+                    <div class="stat-card bg-white rounded-lg shadow-md p-5 border-l-4 border-blue-500">
+                        <p class="text-sm text-gray-600 font-medium">Total Alberta Diploma Market</p>
+                        <p class="text-3xl font-bold mt-1 text-blue-600">1,727</p>
+                        <p class="text-sm text-green-600 mt-1">up from 805 (+115%)</p>
+                    </div>
+                    <div class="stat-card bg-white rounded-lg shadow-md p-5 border-l-4 border-amber-500">
+                        <p class="text-sm text-gray-600 font-medium">NAIT Now Leads</p>
+                        <p class="text-3xl font-bold mt-1 text-amber-600">712</p>
+                        <p class="text-sm text-green-600 mt-1">up from 241 (+195%)</p>
+                    </div>
+                </div>
+
+                <!-- Diploma Enrollment Chart -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-bold mb-2 text-gray-800">HR Diploma Enrollment by Institution (2018-2025)</h3>
+                    <div class="chart-container-tall">
+                        <canvas id="chart-competitive-diploma"></canvas>
+                    </div>
+                    <div class="projection-note">
+                        <strong>Source:</strong> IAP HRMgmtEnrolsAB.xlsx. Headcount data. Note: most competitor "HR diplomas" are business admin programs with HR focus, not pure HR management.
+                    </div>
+                </div>
+
+                <div class="discussion-prompt">
+                    <h4>Key Questions</h4>
+                    <ul>
+                        <li>If NorQuest contracts and NAIT shrinks, what does the real competitive landscape look like?</li>
+                        <li>Are we competing for the same students, or a different segment?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ==================== DIPLOMA FUTURE TAB ==================== -->
+            <div id="view-diploma" class="view-content" style="display:none">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">The Diploma's Future</h2>
+
+                <!-- Two-Scenario Frame -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-amber-500">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Scenario A: Revitalize</h3>
+                        <p class="text-sm text-gray-700 mb-3">Modernize the diploma to compete directly.</p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start gap-2"><span class="text-green-600 font-bold">+</span><span>Competitors projected to shrink (international enrollment tightening)</span></div>
+                            <div class="flex items-start gap-2"><span class="text-green-600 font-bold">+</span><span>Domestic demand for HR credentials remains</span></div>
+                            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">?</span><span>True domestic market size unknown</span></div>
+                            <div class="flex items-start gap-2"><span class="text-red-600 font-bold">-</span><span>Requires significant investment (online delivery, marketing)</span></div>
+                            <div class="flex items-start gap-2"><span class="text-red-600 font-bold">-</span><span>AI automating the entry-level roles this diploma prepares for</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-blue-500">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Scenario B: Evolve</h3>
+                        <p class="text-sm text-gray-700 mb-3">Reposition as a specialized credential or degree bridge.</p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start gap-2"><span class="text-green-600 font-bold">+</span><span>BComm HR degree growing steadily (146 to 215, +47%)</span></div>
+                            <div class="flex items-start gap-2"><span class="text-green-600 font-bold">+</span><span>HRMT 100 core creates natural pipeline to degree</span></div>
+                            <div class="flex items-start gap-2"><span class="text-green-600 font-bold">+</span><span>Aligns with employer demand for strategic HR skills</span></div>
+                            <div class="flex items-start gap-2"><span class="text-red-600 font-bold">-</span><span>Loses diploma-seeking students to competitors</span></div>
+                            <div class="flex items-start gap-2"><span class="text-red-600 font-bold">-</span><span>Fewer total HR students in the near term</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CPHR Data (condensed) -->
+                <div class="insight-box insight-warning mb-6">
+                    <strong>CPHR data:</strong> 83 student members (60 degree, 23 diploma). Only 3 wrote the NKE in 2024-25, likely because qualifying GPAs can waive it. Of those who wrote: degree holders passed (2/2), diploma did not (0/1). Takeaway: our accreditation is the value, and the degree pathway produces stronger outcomes.
+                </div>
+
+                <!-- AQA Cross-Reference -->
+                <div class="insight-box insight-info mb-6">
+                    <strong>AQA implications:</strong> 6 of 8 AQA recommendations (M1, M2, M3, M4, A2, A4) depend on this direction. Two are already underway (A1: first-year instruction, A3: BWIL 200 elective). Use the <strong>Action Worksheet</strong> to confirm the sequencing.
+                </div>
+
+                <div class="discussion-prompt">
+                    <h4>Key Questions</h4>
+                    <ul>
+                        <li>If competitors contract, does that change our calculus, or is the diploma decline MacEwan-specific?</li>
+                        <li>Which scenario better serves students given employment trends?</li>
+                        <li>What data do we still need before committing? (Laddering rates, domestic splits?)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ==================== HRMT 100 VISION TAB ==================== -->
+            <div id="view-hrmt100" class="view-content" style="display:none">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">HRMT 100: Our Front Door to Every BComm Student</h2>
+
+                <!-- The Opportunity -->
+                <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-lg p-5 mb-6">
+                    <p class="text-gray-700"><strong>Fall 2027:</strong> HRMT 100 enters BComm core. ~621 to ~1,586 students/year. Every BComm student takes this course. This is independent of the diploma decision.</p>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="stat-card bg-white rounded-lg shadow-md p-5 border-l-4 border-teal-500">
+                        <p class="text-sm text-gray-600 font-medium">Current HRMT 200</p>
+                        <p class="text-3xl font-bold mt-1 text-teal-600">621</p>
+                        <p class="text-sm text-gray-500">students/year (12 sections)</p>
+                    </div>
+                    <div class="stat-card bg-white rounded-lg shadow-md p-5 border-l-4 border-emerald-500">
+                        <p class="text-sm text-gray-600 font-medium">Future HRMT 100 (Core)</p>
+                        <p class="text-3xl font-bold mt-1 text-emerald-600">~1,586</p>
+                        <p class="text-sm text-gray-500">students/year (~27 sections)</p>
+                    </div>
+                </div>
+
+                <!-- Enrollment Projection Chart -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-bold mb-2 text-gray-800">Enrollment Projection</h3>
+                    <div class="chart-container">
+                        <canvas id="chart-hrmt100-projection"></canvas>
+                    </div>
+                </div>
+
+                <!-- Key Decisions -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-bold mb-3 text-gray-800">Today's Decisions</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h4 class="font-bold text-gray-800 mb-1 text-sm">Course Vision</h4>
+                            <p class="text-sm text-gray-700">Strategic HR vs. foundational? HR as a career vs. HR as a management function?</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h4 class="font-bold text-gray-800 mb-1 text-sm">Ownership</h4>
+                            <p class="text-sm text-gray-700">Faculty group takes this on. Who volunteers to lead? Confirm work starts next meeting.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline (condensed) -->
+                <div class="insight-box insight-info mb-6">
+                    <strong>Timeline:</strong> NOW: agree on vision, identify a lead (Mar-Jun 2026). Fall 2026: course design, multi-section model. Winter 2027: finalize materials. <strong>Fall 2027: launch.</strong>
+                </div>
+
+                <div class="discussion-prompt">
+                    <h4>Key Questions</h4>
+                    <ul>
+                        <li>What's the single most important thing HRMT 100 should accomplish?</li>
+                        <li>Who volunteers to lead? (Faculty group is the working group.)</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    // ===== TAB NAVIGATION =====
+    function showView(viewId) {
+        document.querySelectorAll('.view-content').forEach(v => v.style.display = 'none');
+        document.querySelectorAll('[id^="btn-"]').forEach(b => {
+            b.classList.remove('tab-active');
+            b.classList.add('bg-gray-100', 'text-gray-700');
+        });
+        document.getElementById('view-' + viewId).style.display = 'block';
+        const btn = document.getElementById('btn-' + viewId);
+        btn.classList.add('tab-active');
+        btn.classList.remove('bg-gray-100', 'text-gray-700');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    // ===== CHART COLORS =====
+    const colors = {
+        blue: '#3B82F6', purple: '#8B5CF6', amber: '#F59E0B',
+        emerald: '#10B981', red: '#EF4444', teal: '#14B8A6', gray: '#6B7280'
+    };
+
+    // ===== COMPETITIVE: Diploma Comparison =====
+    new Chart(document.getElementById('chart-competitive-diploma'), {
+        type: 'line',
+        data: {
+            labels: ['2018-19','2019-20','2020-21','2021-22','2022-23','2023-24','2024-25'],
+            datasets: [
+                { label: 'MacEwan', data: [295,244,215,178,148,144,128], borderColor: '#DC2626', borderWidth: 3, tension: 0.3, fill: false },
+                { label: 'NAIT', data: [241,209,325,342,392,514,712], borderColor: '#2563EB', borderWidth: 3, tension: 0.3, fill: false },
+                { label: 'NorQuest', data: [32,28,72,98,174,269,272], borderColor: '#059669', borderWidth: 3, tension: 0.3, fill: false },
+                { label: 'SAIT', data: [112,118,131,116,157,233,268], borderColor: '#D97706', borderWidth: 3, tension: 0.3, fill: false },
+                { label: 'Bow Valley', data: [38,39,63,73,133,231,193], borderColor: '#7C3AED', borderWidth: 3, tension: 0.3, fill: false }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { beginAtZero: true, title: { display: true, text: 'Students (Headcount)' } } }
+        }
+    });
+
+    // ===== HRMT 100: Projection =====
+    new Chart(document.getElementById('chart-hrmt100-projection'), {
+        type: 'bar',
+        data: {
+            labels: ['2023-24','2024-25','2025-26','2026-27','2027-28*','2028-29*'],
+            datasets: [{
+                label: 'HRMT 200/100 Enrollment',
+                data: [598, 621, 640, 660, 1586, 1620],
+                backgroundColor: ['#10B981','#10B981','#10B981','#10B981','#059669','#059669'],
+                borderColor: '#059669',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: '* Fall 2027: HRMT 100 enters BComm core (~1,586 students)', font: { size: 13 } }
+            },
+            scales: { y: { beginAtZero: true, title: { display: true, text: 'Students' } } }
+        }
+    });
+    </script>
+</body>
+</html>
